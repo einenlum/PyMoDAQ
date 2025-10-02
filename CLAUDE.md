@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+# This repository is currently in the process of migrating to a mono repo. Check PLAN.md to understand what is happening.
+
 ## Overview
 
 PyMoDAQ (Modular Data Acquisition with Python) is a framework for interfacing scientific experiments with detectors and actuators. It provides both a complete dashboard interface for automated measurements and modular tools for building custom applications.
@@ -226,21 +228,6 @@ PyMoDAQ (main application)
 - **pymodaq_gui → pymodaq_data**: Visualizes data objects
 - **pymodaq_gui → pymodaq_utils**: Uses config, logger, utilities
 - **pymodaq_data → pymodaq_utils**: Uses utilities, units, config
-
-## Local Development
-
-The three dependency packages are cloned in `local_deps/`:
-- `local_deps/pymodaq_utils/`
-- `local_deps/pymodaq_data/`
-- `local_deps/pymodaq_gui/`
-
-To work with local development versions:
-```bash
-pip install -e local_deps/pymodaq_utils
-pip install -e local_deps/pymodaq_data
-pip install -e local_deps/pymodaq_gui
-pip install -e ".[dev]"
-```
 
 ## Additional Dependencies
 
