@@ -31,7 +31,7 @@ classifiers = [
     "Topic :: Software Development :: User Interfaces",
 ]
 dependencies = [
-    "pymodaq_utils>=0.0.8",
+    "pymodaq_utils>=5.1.0",
     "multipledispatch",
     "numpy < 2.0.0",
     "packaging",
@@ -58,12 +58,12 @@ dev = [
 
 [project.urls]
 Homepage = "http://pymodaq.cnrs.fr"
-Source = "https://github.com/PyMoDAQ/pymodaq_data"
-Tracker = "https://github.com/PyMoDAQ/pymodaq_data/issues"
+Source = "https://github.com/PyMoDAQ/PyMoDAQ"
+Tracker = "https://github.com/PyMoDAQ/PyMoDAQ/issues"
 
 [tool.hatch.version]
 source = "vcs"
-fallback-version = "5.0.12"
+fallback-version = "5.1.0"
 
 [tool.hatch.build.targets.sdist]
 include = [

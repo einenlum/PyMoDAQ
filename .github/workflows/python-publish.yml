@@ -1,38 +1,74 @@
-# This workflow will upload a Python Package using Twine when a release is created
+# This workflow will upload all PyMoDAQ packages when a release is created
 # For more information see: https://help.github.com/en/actions/language-and-framework-guides/using-python-with-github-actions#publishing-to-package-registries
 
-name: Upload Python Package
+name: Publish All Packages
 
 on:
   release:
     types: [created]
 
 jobs:
-  build:
-
+  publish:
     runs-on: ubuntu-latest
-          
+
     steps:
-    - uses: actions/checkout@v4.2.2
-    - name: Set up Python
-      uses: actions/setup-python@v5.6.0
-      with:
-        python-version: '3.11'
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install hatch hatchling
-    - name: Get history and tags for SCM versioning to work
-      run: |
-        git branch
-        git fetch --prune --unshallow
-        git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-        hatch version
-    - name: Build
-      run: hatch build
-    - name: publish
-      env:
-        HATCH_INDEX_USER: ${{ secrets.PYPI_USERNAME }}
-        HATCH_INDEX_AUTH: ${{ secrets.PYPI_PASSWORD }}
-      run: |
-        hatch publish
+      - uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.6.0
+        with:
+          python-version: '3.11'
+
+      - name: Install hatch
+        run: |
+          python -m pip install --upgrade pip
+          pip install hatch hatchling
+
+      # Verify version from tags
+      - name: Get version from tags
+        run: |
+          git fetch --prune --unshallow || true
+          git fetch --depth=1 origin +refs/tags/*:refs/tags/* || true
+
+      # Build and publish in dependency order
+      - name: Publish pymodaq_utils
+        env:
+          HATCH_INDEX_USER: ${{ secrets.PYPI_USERNAME }}
+          HATCH_INDEX_AUTH: ${{ secrets.PYPI_PASSWORD }}
+        run: |
+          cd packages/pymodaq_utils
+          hatch version
+          hatch build
+          hatch publish
+
+      - name: Publish pymodaq_data
+        env:
+          HATCH_INDEX_USER: ${{ secrets.PYPI_USERNAME }}
+          HATCH_INDEX_AUTH: ${{ secrets.PYPI_PASSWORD }}
+        run: |
+          cd packages/pymodaq_data
+          hatch version
+          hatch build
+          hatch publish
+
+      - name: Publish pymodaq_gui
+        env:
+          HATCH_INDEX_USER: ${{ secrets.PYPI_USERNAME }}
+          HATCH_INDEX_AUTH: ${{ secrets.PYPI_PASSWORD }}
+        run: |
+          cd packages/pymodaq_gui
+          hatch version
+          hatch build
+          hatch publish
+
+      - name: Publish pymodaq
+        env:
+          HATCH_INDEX_USER: ${{ secrets.PYPI_USERNAME }}
+          HATCH_INDEX_AUTH: ${{ secrets.PYPI_PASSWORD }}
+        run: |
+          cd packages/pymodaq
+          hatch version
+          hatch build
+          hatch publish

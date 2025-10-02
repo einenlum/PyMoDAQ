@@ -44,8 +44,8 @@ dependencies = [
     "scipy",
     "setuptools>=60",
     "toml",
-    "pymodaq_utils>=0.0.8",
-    "pymodaq_data>=5.0.13",
+    "pymodaq_utils>=5.1.0",
+    "pymodaq_data>=5.1.0",
 ]
 
 [project.optional-dependencies]
@@ -72,12 +72,12 @@ parameter_example = "pymodaq_gui.examples.parameter_ex:main"
 
 [project.urls]
 Homepage = "http://pymodaq.cnrs.fr"
-Source = "https://github.com/PyMoDAQ/pymodaq_gui"
-Tracker = "https://github.com/PyMoDAQ/pymodaq_gui/issues"
+Source = "https://github.com/PyMoDAQ/PyMoDAQ"
+Tracker = "https://github.com/PyMoDAQ/PyMoDAQ/issues"
 
 [tool.hatch.version]
 source = "vcs"
-fallback-version = "5.0.0"
+fallback-version = "5.1.0"
 
 [tool.hatch.build.targets.sdist]
 include = [

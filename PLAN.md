@@ -323,8 +323,6 @@ dependencies = [
 
 2. **Update root files:**
    - Update root `README.rst` to document monorepo structure
-   - Update `CLAUDE.md` with new local dev instructions
-   - Create this `PLAN.md`
 
 3. **Create unified CI workflows:**
    - Replace `.github/workflows/tests.yml` with monorepo version

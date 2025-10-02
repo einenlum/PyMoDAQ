@@ -26,6 +26,7 @@ jobs:
         os: ["ubuntu-latest", "windows-latest"]
         python-version: ["3.9", "3.10", "3.11", "3.12"]
         qt-backend: ["pyqt5", "pyqt6", "pyside6"]
+        package: ["pymodaq_utils", "pymodaq_data", "pymodaq_gui", "pymodaq"]
     runs-on: ${{ matrix.os }}
     env:
       DISPLAY: ':99'
@@ -53,7 +54,10 @@ jobs:
           git fetch --depth=1 origin +refs/tags/*:refs/tags/*
           python -m pip install --upgrade pip
           pip install flake8 pytest pytest-cov pytest-qt pytest-xvfb pytest-xdist setuptools wheel numpy h5py ${{ matrix.qt-backend }}
-          pip install -e .    
+          pip install -e packages/pymodaq_utils
+          pip install -e packages/pymodaq_data
+          pip install -e packages/pymodaq_gui
+          pip install -e packages/pymodaq    
       
       # Create folder and set permissions on Ubuntu
       - name: Create local pymodaq folder setup env (Linux)
@@ -72,17 +76,18 @@ jobs:
         run: |
           # stop the build if there are Python syntax errors or undefined names
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=docs
-      - name: Tests with ${{ matrix.os }} ${{ matrix.python-version }} ${{ matrix.qt-backend}}
+      - name: Tests with ${{ matrix.os }} ${{ matrix.python-version }} ${{ matrix.qt-backend}} ${{ matrix.package }}
         id: tests
         run: |
           mkdir coverage
-          pytest -vv --cov=pymodaq -n 1
-          mv .coverage coverage/coverage_${{ matrix.os }}_${{ matrix.python-version }}_${{ matrix.qt-backend }}
+          cd packages/${{ matrix.package }}
+          pytest -vv --cov=. -n 1
+          mv .coverage ../../coverage/coverage_${{ matrix.os }}_${{ matrix.python-version }}_${{ matrix.qt-backend }}_${{ matrix.package }}
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4.6.2
         with:
-          name: coverage-${{ matrix.os }}-${{ matrix.python-version }}_${{ matrix.qt-backend }}
-          path: coverage/coverage_${{ matrix.os }}_${{ matrix.python-version }}_${{ matrix.qt-backend }}
+          name: coverage-${{ matrix.os }}-${{ matrix.python-version }}_${{ matrix.qt-backend }}_${{ matrix.package }}
+          path: coverage/coverage_${{ matrix.os }}_${{ matrix.python-version }}_${{ matrix.qt-backend }}_${{ matrix.package }}
 
 
      
@@ -98,7 +103,7 @@ jobs:
           label: ''
           status: 'passing'
           color: 'green'
-          path: '${{ steps.extract_branch.outputs.branch }}/tests_${{runner.os}}_${{matrix.python-version}}_${{matrix.qt-backend}}.svg'
+          path: '${{ steps.extract_branch.outputs.branch }}/tests_${{runner.os}}_${{matrix.python-version}}_${{matrix.qt-backend}}_${{matrix.package}}.svg'
       - name: generate badge (fail)
         if: ${{ failure() }}
         uses: emibcn/badge-action@v2.0.3
@@ -106,15 +111,15 @@ jobs:
           label: ''
           status: 'failing'
           color: 'red'
-          path: '${{ steps.extract_branch.outputs.branch }}/tests_${{runner.os}}_${{matrix.python-version}}_${{matrix.qt-backend}}.svg'
+          path: '${{ steps.extract_branch.outputs.branch }}/tests_${{runner.os}}_${{matrix.python-version}}_${{matrix.qt-backend}}_${{matrix.package}}.svg'
 
 
       - name: Upload badge artifact
         if: ${{ always() }}
         uses: actions/upload-artifact@v4.6.2
         with:
-          name:  tests_${{runner.os}}_${{matrix.python-version}}_${{matrix.qt-backend}}
-          path: '${{ steps.extract_branch.outputs.branch }}/tests_${{runner.os}}_${{matrix.python-version}}_${{matrix.qt-backend}}.svg'
+          name:  tests_${{runner.os}}_${{matrix.python-version}}_${{matrix.qt-backend}}_${{matrix.package}}
+          path: '${{ steps.extract_branch.outputs.branch }}/tests_${{runner.os}}_${{matrix.python-version}}_${{matrix.qt-backend}}_${{matrix.package}}.svg'
           if-no-files-found: error 
     
     outputs:
